@@ -10,9 +10,16 @@ namespace CRUD.Domain.Entities
     {
         public string Matricula { get; set; }
         public string Curso { get; set; }
-        //public virtual ICollection<Nota> Notas { get; set; }
-    }
+       // public virtual ICollection<Nota> Notas { get; set; } = new List<Nota>();        
+        public Aluno() { }
 
+        public Aluno(string nome, string email, DateTime dataNascimento, string telefone, string matricula, string curso)
+            : base(nome, email, dataNascimento, telefone)
+        {
+            Matricula = matricula;
+            Curso = curso;
+        }
+    }
     /*
     public class Nota
     {

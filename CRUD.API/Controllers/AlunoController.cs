@@ -1,27 +1,31 @@
-﻿using CRUD.Domain.Entities;
-using CRUD.Infra.Context;
+﻿using AutoMapper;
+using CRUD.API.ViewModels;
+using CRUD.Services.DTO;
+using CRUD.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CRUD.API.Controllers
 {
-        [Route("api/[controller]")]
-        [ApiController]
-        public class AlunoController : ControllerBase
-        {
-            private readonly DataContext _context;
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AlunoController : ControllerBase
+    {
+        private readonly IMapper _mapper;
+        private readonly IAlunoServices _alunoService;
 
-        public AlunoController(DataContext context)
+        public AlunoController(IMapper mapper, IAlunoServices alunoService)
         {
-            _context = context;
+            _mapper = mapper;
+            _alunoService = alunoService;
         }
 
         [HttpPost]
-            public async Task<ActionResult<Aluno>> CreateAluno(Aluno aluno)
-            {
-                _context.Alunos.Add(aluno);
-                await _context.SaveChangesAsync();
-                return Ok(await _context.Alunos.ToListAsync());
-            }
+        public async Task<IActionResult> Create([FromBody] AlunoViewModel alunoViewModel)
+        {
+            var alunoDTO = _mapper.Map<AlunoDTO>(alunoViewModel);
+            var alunoCreated = await _alunoService.Create(alunoDTO);            
+            return Ok(alunoCreated);
         }
+    }
 }
